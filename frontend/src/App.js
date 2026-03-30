@@ -2,6 +2,8 @@ import React, { useState } from "react";
 import axios from "axios";
 import "./App.css";
 
+const BASE_URL = "https://saahiti402-ai-suite.hf.space";
+
 function App() {
   const [file, setFile] = useState(null);
   const [mode, setMode] = useState("detect");
@@ -30,38 +32,39 @@ function App() {
       let response;
 
       if (mode === "detect") {
-        response = await axios.post(
-          "https://saahiti402-ai-suite.hf.space//detect",
-          formData
-        );
-        setImageUrl(response.data.image_url);
-        setLabels(response.data.labels);
+        response = await axios.post(`${BASE_URL}/detect`, formData, {
+          headers: { "Content-Type": "multipart/form-data" }
+        });
+
+        setImageUrl(`${BASE_URL}${response.data.image_url}`);
+        setLabels(response.data.labels || []);
 
       } else if (mode === "annotate") {
-        response = await axios.post(
-          "https://saahiti402-ai-suite.hf.space//annotations",
-          formData
-        );
-        setAnnotations(response.data.annotations);
+        response = await axios.post(`${BASE_URL}/annotations`, formData, {
+          headers: { "Content-Type": "multipart/form-data" }
+        });
+
+        setAnnotations(response.data.annotations || []);
 
       } else if (mode === "cartoon") {
-        response = await axios.post(
-          "https://saahiti402-ai-suite.hf.space//cartoonize",
-          formData
-        );
-        setImageUrl(response.data.image_url);
+        response = await axios.post(`${BASE_URL}/cartoonize`, formData, {
+          headers: { "Content-Type": "multipart/form-data" }
+        });
+
+        setImageUrl(`${BASE_URL}${response.data.image_url}`);
 
       } else if (mode === "video") {
-        response = await axios.post(
-          "https://saahiti402-ai-suite.hf.space//video-detect",
-          formData
-        );
-        setVideoUrl(response.data.video_url);
+        response = await axios.post(`${BASE_URL}/video-detect`, formData, {
+          headers: { "Content-Type": "multipart/form-data" }
+        });
+
+        setVideoUrl(`${BASE_URL}${response.data.video_url}`);
       }
 
     } catch (error) {
-      console.error(error);
-      alert("Something went wrong");
+      console.error("FULL ERROR:", error);
+      console.error(error.response?.data);
+      alert(error.response?.data?.error || "Something went wrong");
     }
 
     setLoading(false);
@@ -109,16 +112,10 @@ function App() {
           }}
         />
 
-        <button
-          onClick={handleProcess}
-          style={{
-            width: "100%"
-          }}
-        >
+        <button onClick={handleProcess} style={{ width: "100%" }}>
           {loading ? "Processing..." : "Run Feature"}
         </button>
 
-        {/* IMAGE OUTPUT */}
         {imageUrl && (
           <img
             src={imageUrl}
@@ -131,7 +128,6 @@ function App() {
           />
         )}
 
-        {/* VIDEO DOWNLOAD OUTPUT */}
         {videoUrl && (
           <div
             style={{
@@ -164,7 +160,6 @@ function App() {
           </div>
         )}
 
-        {/* LABELS */}
         {labels.length > 0 && (
           <div style={{ marginTop: "20px" }}>
             <h3>Detected Objects</h3>
@@ -176,7 +171,6 @@ function App() {
           </div>
         )}
 
-        {/* ANNOTATIONS */}
         {annotations.length > 0 && (
           <div style={{ marginTop: "20px" }}>
             <h3>Annotations</h3>
