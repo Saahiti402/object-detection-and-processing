@@ -48,7 +48,7 @@ def detect():
         labels.append(model.names[cls_id])
 
     return jsonify({
-        "image_url": f"http://127.0.0.1:5000/output/{filename}",
+        "image_url": f"https://saahiti402-ai-suite.hf.space/output/{filename}",
         "labels": labels
     })
 
@@ -128,7 +128,7 @@ def cartoonize():
     cv2.imwrite(output_path, cartoon)
 
     return jsonify({
-        "image_url": f"http://127.0.0.1:5000/output/{output_filename}"
+        "image_url": f"https://saahiti402-ai-suite.hf.space/output/{output_filename}"
     })
 
 
@@ -178,7 +178,7 @@ def video_detect():
     out.release()
 
     return jsonify({
-        "video_url": f"http://127.0.0.1:5000/output/{output_filename}"
+        "video_url": f"https://saahiti402-ai-suite.hf.space/output/{output_filename}"
     })
 
 
@@ -190,4 +190,4 @@ def get_output(filename):
 
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(host="0.0.0.0", port=7860)
