@@ -31,7 +31,7 @@ function App() {
 
       if (mode === "detect") {
         response = await axios.post(
-          "http://127.0.0.1:5000/detect",
+          "https://objectback-kyqp.vercel.app//detect",
           formData
         );
         setImageUrl(response.data.image_url);
@@ -39,21 +39,21 @@ function App() {
 
       } else if (mode === "annotate") {
         response = await axios.post(
-          "http://127.0.0.1:5000/annotations",
+          "https://objectback-kyqp.vercel.app//annotations",
           formData
         );
         setAnnotations(response.data.annotations);
 
       } else if (mode === "cartoon") {
         response = await axios.post(
-          "http://127.0.0.1:5000/cartoonize",
+          "https://objectback-kyqp.vercel.app//cartoonize",
           formData
         );
         setImageUrl(response.data.image_url);
 
       } else if (mode === "video") {
         response = await axios.post(
-          "http://127.0.0.1:5000/video-detect",
+          "https://objectback-kyqp.vercel.app//video-detect",
           formData
         );
         setVideoUrl(response.data.video_url);
