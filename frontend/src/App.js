@@ -31,7 +31,7 @@ function App() {
 
       if (mode === "detect") {
         response = await axios.post(
-          "https://objectback-kyqp.vercel.app//detect",
+          "https://saahiti402-ai-suite.hf.space//detect",
           formData
         );
         setImageUrl(response.data.image_url);
@@ -39,21 +39,21 @@ function App() {
 
       } else if (mode === "annotate") {
         response = await axios.post(
-          "https://objectback-kyqp.vercel.app//annotations",
+          "https://saahiti402-ai-suite.hf.space//annotations",
           formData
         );
         setAnnotations(response.data.annotations);
 
       } else if (mode === "cartoon") {
         response = await axios.post(
-          "https://objectback-kyqp.vercel.app//cartoonize",
+          "https://saahiti402-ai-suite.hf.space//cartoonize",
           formData
         );
         setImageUrl(response.data.image_url);
 
       } else if (mode === "video") {
         response = await axios.post(
-          "https://objectback-kyqp.vercel.app//video-detect",
+          "https://saahiti402-ai-suite.hf.space//video-detect",
           formData
         );
         setVideoUrl(response.data.video_url);
