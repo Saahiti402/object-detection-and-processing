@@ -10,6 +10,7 @@ CORS(app)
 
 UPLOAD_FOLDER = "uploads"
 OUTPUT_FOLDER = "outputs"
+BASE_URL = "https://saahiti402-ai-suite.hf.space"
 
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 os.makedirs(OUTPUT_FOLDER, exist_ok=True)
@@ -22,12 +23,14 @@ def home():
     return {"message": "Backend running successfully"}
 
 
+# ---------------- OBJECT DETECTION ----------------
 @app.route("/detect", methods=["POST"])
 def detect():
     if "file" not in request.files:
         return jsonify({"error": "No file uploaded"})
 
     file = request.files["file"]
+
     filename = f"{int(time.time())}_{file.filename}"
     input_path = os.path.join(UPLOAD_FOLDER, filename)
     output_path = os.path.join(OUTPUT_FOLDER, filename)
@@ -46,17 +49,19 @@ def detect():
         labels.append(model.names[cls_id])
 
     return jsonify({
-    "image_url": f"https://saahiti402-ai-suite.hf.space/output/{filename}",
-    "labels": labels
-})
+        "image_url": f"{BASE_URL}/output/{filename}",
+        "labels": labels
+    })
 
 
+# ---------------- ANNOTATIONS ----------------
 @app.route("/annotations", methods=["POST"])
 def annotations():
     if "file" not in request.files:
         return jsonify({"error": "No file uploaded"})
 
     file = request.files["file"]
+
     filename = f"{int(time.time())}_{file.filename}"
     input_path = os.path.join(UPLOAD_FOLDER, filename)
 
@@ -87,12 +92,14 @@ def annotations():
     return jsonify({"annotations": annotations_data})
 
 
+# ---------------- CARTOONIZATION ----------------
 @app.route("/cartoonize", methods=["POST"])
 def cartoonize():
     if "file" not in request.files:
         return jsonify({"error": "No file uploaded"})
 
     file = request.files["file"]
+
     filename = f"{int(time.time())}_{file.filename}"
     input_path = os.path.join(UPLOAD_FOLDER, filename)
 
@@ -107,22 +114,26 @@ def cartoonize():
     gray = cv2.medianBlur(gray, 5)
 
     edges = cv2.adaptiveThreshold(
-        gray, 255,
+        gray,
+        255,
         cv2.ADAPTIVE_THRESH_MEAN_C,
         cv2.THRESH_BINARY,
-        9, 9
+        9,
+        9
     )
 
     color = cv2.bilateralFilter(image, 9, 300, 300)
+
     cartoon = cv2.bitwise_and(color, color, mask=edges)
 
     cv2.imwrite(output_path, cartoon)
 
     return jsonify({
-        "image_url": f"https://saahiti402-ai-suite.hf.space/output/{output_filename}"
+        "image_url": f"{BASE_URL}/output/{output_filename}"
     })
 
 
+# ---------------- VIDEO DETECTION ----------------
 @app.route("/video-detect", methods=["POST"])
 def video_detect():
     if "file" not in request.files:
@@ -161,16 +172,18 @@ def video_detect():
 
         results = model(frame)
         processed_frame = results[0].plot()
+
         out.write(processed_frame)
 
     cap.release()
     out.release()
 
     return jsonify({
-    "video_url": f"https://saahiti402-ai-suite.hf.space/output/{output_filename}"
+        "video_url": f"{BASE_URL}/output/{output_filename}"
     })
 
 
+# ---------------- OUTPUT FILE SERVING ----------------
 @app.route("/output/<filename>")
 def get_output(filename):
     file_path = os.path.join(OUTPUT_FOLDER, filename)

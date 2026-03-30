@@ -32,39 +32,26 @@ function App() {
       let response;
 
       if (mode === "detect") {
-        response = await axios.post(`${BASE_URL}/detect`, formData, {
-          headers: { "Content-Type": "multipart/form-data" }
-        });
-
-        setImageUrl(`${BASE_URL}${response.data.image_url}`);
+        response = await axios.post(`${BASE_URL}/detect`, formData);
+        setImageUrl(`${response.data.image_url}?t=${Date.now()}`);
         setLabels(response.data.labels || []);
 
       } else if (mode === "annotate") {
-        response = await axios.post(`${BASE_URL}/annotations`, formData, {
-          headers: { "Content-Type": "multipart/form-data" }
-        });
-
+        response = await axios.post(`${BASE_URL}/annotations`, formData);
         setAnnotations(response.data.annotations || []);
 
       } else if (mode === "cartoon") {
-        response = await axios.post(`${BASE_URL}/cartoonize`, formData, {
-          headers: { "Content-Type": "multipart/form-data" }
-        });
-
-        setImageUrl(`${BASE_URL}${response.data.image_url}`);
+        response = await axios.post(`${BASE_URL}/cartoonize`, formData);
+        setImageUrl(`${response.data.image_url}?t=${Date.now()}`);
 
       } else if (mode === "video") {
-        response = await axios.post(`${BASE_URL}/video-detect`, formData, {
-          headers: { "Content-Type": "multipart/form-data" }
-        });
-
-        setVideoUrl(`${BASE_URL}${response.data.video_url}`);
+        response = await axios.post(`${BASE_URL}/video-detect`, formData);
+        setVideoUrl(`${response.data.video_url}?t=${Date.now()}`);
       }
 
     } catch (error) {
       console.error("FULL ERROR:", error);
-      console.error(error.response?.data);
-      alert(error.response?.data?.error || "Something went wrong");
+      alert("Something went wrong");
     }
 
     setLoading(false);
@@ -79,23 +66,11 @@ function App() {
         <p>Smart Computer Vision for Images & Videos</p>
       </header>
 
-      <div
-        className="card"
-        style={{
-          maxWidth: "750px",
-          margin: "auto",
-          padding: "30px"
-        }}
-      >
+      <div className="card" style={{ maxWidth: "750px", margin: "auto", padding: "30px" }}>
         <select
           value={mode}
           onChange={(e) => setMode(e.target.value)}
-          style={{
-            padding: "12px",
-            borderRadius: "10px",
-            marginBottom: "20px",
-            width: "100%"
-          }}
+          style={{ padding: "12px", borderRadius: "10px", marginBottom: "20px", width: "100%" }}
         >
           <option value="detect">🎯 Object Detection</option>
           <option value="annotate">📝 Annotations</option>
@@ -106,10 +81,7 @@ function App() {
         <input
           type="file"
           onChange={(e) => setFile(e.target.files[0])}
-          style={{
-            marginBottom: "20px",
-            width: "100%"
-          }}
+          style={{ marginBottom: "20px", width: "100%" }}
         />
 
         <button onClick={handleProcess} style={{ width: "100%" }}>
@@ -123,7 +95,8 @@ function App() {
             style={{
               width: "100%",
               marginTop: "25px",
-              borderRadius: "16px"
+              borderRadius: "16px",
+              border: "1px solid #ddd"
             }}
           />
         )}
